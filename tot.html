@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Liên ơi...</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: url('lien.jpg') no-repeat center center/cover;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    h1 {
+      color: #fff;
+      font-size: 2.2rem;
+      margin-bottom: 20px;
+      text-shadow: 1px 1px 3px #000;
+      animation: shake 1s infinite;
+    }
+    @keyframes shake {
+      0% { transform: translate(0, 0); }
+      25% { transform: translate(2px, -2px); }
+      50% { transform: translate(-2px, 2px); }
+      75% { transform: translate(2px, 2px); }
+      100% { transform: translate(0, 0); }
+    }
+    .btns button {
+      padding: 12px 20px;
+      margin: 10px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .yes {
+      background-color: #ff4081;
+      color: white;
+    }
+    .no {
+      background-color: #eeeeee;
+    }
+    .no:hover {
+      position: absolute;
+      top: calc(10% + 60% * random());
+      left: calc(10% + 60% * random());
+    }
+    .firework {
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      background: #fff;
+      animation: explode 1s ease-out forwards;
+    }
+    @keyframes explode {
+      to {
+        transform: scale(20);
+        opacity: 0;
+      }
+    }
+    audio {
+      display: none;
+    }
+    .heart {
+      position: fixed;
+      font-size: 24px;
+      animation: pulseOut 2s ease-out forwards;
+      opacity: 0;
+      pointer-events: none;
+    }
+    @keyframes pulseOut {
+      0% {
+        transform: scale(0);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(6);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Liên ơi... Anh hỏi cái này, đừng cười nha 😚</h1>
+  <div class="btns">
+    <button class="yes" onclick="yesAnswer()">Ừa, em cũng thích anh 🥰</button>
+    <button class="no" onmouseover="moveNo(this)">Không nha 😝</button>
+  </div>
+  <audio id="bgMusic" autoplay loop>
+    <source src="love.mp3" type="audio/mp3">
+  </audio>
+  <script>
+    function moveNo(btn) {
+      const x = Math.random() * (window.innerWidth - btn.offsetWidth);
+      const y = Math.random() * (window.innerHeight - btn.offsetHeight);
+      btn.style.position = 'absolute';
+      btn.style.left = `${x}px`;
+      btn.style.top = `${y}px`;
+    }
+
+    function yesAnswer() {
+      document.body.innerHTML = `
+        <h1 style="color: white; text-shadow: 1px 1px 3px #000;">Hihi biết mà 😘 Từ nay mình dính nhau luôn nha 💞</h1>
+        <canvas id="canvas"></canvas>
+      `;
+      launchFireworks();
+      launchHearts();
+    }
+
+    function launchFireworks() {
+      const canvas = document.getElementById('canvas');
+      canvas.style.position = 'fixed';
+      canvas.style.top = 0;
+      canvas.style.left = 0;
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const ctx = canvas.getContext('2d');
+      const particles = [];
+
+      for (let i = 0; i < 100; i++) {
+        particles.push({
+          x: canvas.width / 2,
+          y: canvas.height / 2,
+          dx: (Math.random() - 0.5) * 10,
+          dy: (Math.random() - 0.5) * 10,
+          radius: 2 + Math.random() * 3,
+          color: `hsl(${Math.random() * 360}, 100%, 50%)`
+        });
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fillStyle = p.color;
+          ctx.fill();
+          p.x += p.dx;
+          p.y += p.dy;
+          p.dy += 0.05;
+        });
+        requestAnimationFrame(animate);
+      }
+      animate();
+    }
+
+    function launchHearts() {
+      setInterval(() => {
+        const heart = document.createElement('div');
+        heart.textContent = '💗';
+        heart.className = 'heart';
+        heart.style.left = `${window.innerWidth / 2}px`;
+        heart.style.top = `${window.innerHeight / 2}px`;
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 2000);
+      }, 300);
+    }
+  </script>
+</body>
+</html>
